@@ -1,6 +1,7 @@
 import tkinter as tk
 from database import registration
 import sqlite3
+from tkinter.messagebox import showinfo 
 
 root = tk.Tk()     # создаем корневой объект - окно
 root.title("QuizApp")     # устанавливаем заголовок окна
@@ -19,9 +20,11 @@ def start_quiz():
     if first_name and last_name and grade and age:
         try:
             age = int(age)  # преобразуем возраст в число
-            database.registration(first_name, last_name, age, grade)
+            id = registration(first_name, last_name, age, grade)
             # Здесь можно добавить переход к следующему окну с вопросами
-            print(f"Пользователь {first_name} {last_name} зарегистрирован!")
+            print(f"Пользователь {first_name} {last_name} зарегистрирован с ID{id}!")
+            if id is not None:
+                showinfo(title="Информация", message="Успешная регистрация")
         except ValueError:
             print("Возраст должен быть числом!")
     else:

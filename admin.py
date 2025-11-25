@@ -1,23 +1,28 @@
 import sqlite3
- 
-con = sqlite3.connect("quiz.db")
-cursor = con.cursor() 
 
-def load_question(con):
-    print("Введите текст вопроса")
-    text_question = input()
-    print("ВЫберите вариант ответа")
-    options = input()
-    print("Введите правильный ответ на вопрос")
-    answers = int(input())
-    print("Введите уровень сложности")
-    difficulty_level = int(input())
+def load_question(text_question, options, answers, difficulty_level):
+    con = sqlite3.connect("quiz.db")
+    
     cur = con.cursor()
+    
+    # Создаем таблицу questions, если она не существует
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS questions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            text_questions TEXT NOT NULL,
+            options TEXT NOT NULL,
+            answers INTEGER NOT NULL,
+            difficulty_level INTEGER NOT NULL
+        )
+    ''')
+    
     cur.execute("INSERT INTO questions (text_questions, options, answers, difficulty_level) VALUES (?, ?, ?, ?)", 
                 (text_question, options, answers, difficulty_level))
     con.commit()
-    cursor.execute("SELECT * FROM questions")
-    print(cursor.fetchall())
+    
+    cur.execute("SELECT * FROM questions")
+    print("Все вопросы в базе:")
+    for row in cur.fetchall():
+        print(row)
 
-
-load_question(con)
+    con.close()
